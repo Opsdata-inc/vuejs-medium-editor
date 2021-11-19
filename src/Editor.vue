@@ -34,7 +34,6 @@ import InsertEmbed from './libs/InsertEmbed';
 import ListHandler from './libs/ListHandler';
 import ReadMode from './libs/ReadMode';
 import _ from 'underscore';
-import hljs from 'highlight.js';
 
 export default {
   name: "medium-editor",
@@ -76,7 +75,6 @@ export default {
     ReadMode
   },
   mounted() {
-    this.addClassToPre();
     if (!this.readOnly) {
       this.createElm();
     }
@@ -94,7 +92,6 @@ export default {
       this.editor.destroy();
     },
     triggerChange() {
-        this.addClassToPre() ;
       const content = this.editor.getContent();
       setTimeout(() => {
         this.hasContent = /<[a-z][\s\S]*>/i.test(content);
@@ -108,27 +105,9 @@ export default {
       // console.log("callback")
       this.$emit("uploaded", url);
     },
-    addClassToPre() {
-        hljs.configure({});
-        const brPlugin = {
-          "before:highlightBlock": ({ block }) => {
-            block.innerHTML = block.innerHTML.replace(/<br[ /]*>/g, '\n');
-          },
-          "after:highlightBlock": ({ result }) => {
-            result.value = result.value.replace(/\n/g, "<br>");
-          }
-        };
-
-        hljs.addPlugin(brPlugin);
-        document.querySelectorAll('pre').forEach((block) => {
-            hljs.highlightElement(block);
-            block.setAttribute("spellcheck", "false");
-        });
-    },
   },
   destroyed() {
     this.destroyElm();
   }
 };
 </script>
-
